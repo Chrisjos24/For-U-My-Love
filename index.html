@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Responsive Card Slider — Loop + Glass + Swipe</title>
+<title>Responsive Card Slider — Loop + Glass + Swipe + Tap</title>
 <style>
   :root{
     --card-w: 220px;
@@ -92,8 +92,8 @@
     <div class="card"><div class="label">05</div><p>Most Beautiful Person on Earth 💯</p></div>
     <div class="card"><div class="label">06</div><p>And Cutest 🌸</p></div>
     <div class="card"><div class="label">07</div><p>You make me Smile 😊</p></div>
-    <div class="card"><div class="label">08</div><p>I Feel Very Lucky Every Day 🌟</p></div>
-    <div class="card"><div class="label">09</div><p>I Have To Say This 💡</p></div>
+    <div class="card"><div class="label">08</div><p>I Feel Very Lucky Everyday 🌟</p></div>
+    <div class="card"><div class="label">09</div><p>I Have To Say This💡</p></div>
     <div class="card"><div class="label">10</div><p>I Love You❤️</p></div>
   </div>
 
@@ -161,10 +161,6 @@
     });
   }
 
-  function isTouchDevice(){
-    return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  }
-
   // --- Swipe handling with loop ---
   let startX = 0, isDragging = false;
   const SWIPE_THRESHOLD_RATIO = 0.12;
@@ -183,29 +179,24 @@
     const threshold = Math.max(24, sliderRect.width * SWIPE_THRESHOLD_RATIO);
 
     if (dx < -threshold) {
-      // swipe left → next (loop)
-      current = (current + 1) % cards.length;
+      current = (current + 1) % cards.length; // loop forward
     } else if (dx > threshold) {
-      // swipe right → prev (loop)
-      current = (current - 1 + cards.length) % cards.length;
+      current = (current - 1 + cards.length) % cards.length; // loop backward
     }
     updateCards();
   }
 
-  // Desktop click handler (loop)
-  function onClickDesktop(){
-    if (isTouchDevice()) return;
+  // Click handler (always active on both desktop & touch)
+  function onClick(){
     current = (current + 1) % cards.length;
     updateCards();
   }
 
   function attachHandlers(){
-    if (isTouchDevice()) {
-      slider.addEventListener('touchstart', onTouchStart, {passive:true});
-      slider.addEventListener('touchend', onTouchEnd);
-    } else {
-      slider.addEventListener('click', onClickDesktop);
-    }
+    slider.addEventListener('click', onClick);
+    slider.addEventListener('touchstart', onTouchStart, {passive:true});
+    slider.addEventListener('touchend', onTouchEnd);
+
     window.addEventListener('resize', refreshLayout);
     window.addEventListener('orientationchange', refreshLayout);
   }
